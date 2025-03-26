@@ -144,7 +144,7 @@ public class DriveSubsystem extends SubsystemBase {
       (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
       new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
               new PIDConstants(0.04, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(1.0, 0.0, 0.0) // Rotation PID constants
+              new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
       ),
       config, // The robot configuration
       () -> {
@@ -167,7 +167,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -196,7 +196,7 @@ public class DriveSubsystem extends SubsystemBase {
    
     return DriveConstants.kDriveKinematics.toChassisSpeeds(
       //m_frontLeft.getState(), m_frontRight.getState(), m_rearLeft.getState(), m_rearRight.getState());
-      m_frontRight.getState(), m_rearRight.getState(), m_frontLeft.getState(), m_rearLeft.getState());
+      m_frontLeft.getState(), m_frontRight.getState(), m_rearLeft.getState(), m_rearRight.getState());
   }
 
   /**
@@ -216,7 +216,7 @@ public class DriveSubsystem extends SubsystemBase {
         pose);
   }
   public void driveRobotRelative(ChassisSpeeds speeds){
-    SwerveModuleState[] swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds.div(2));
+    SwerveModuleState[] swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
@@ -238,8 +238,8 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond / 2;
+    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond / 2;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
     fieldRelative = true;
 

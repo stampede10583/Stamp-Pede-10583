@@ -9,12 +9,6 @@
           "data": {
             "pathName": "Line Test"
           }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
-          }
         }
       ]
     }

@@ -34,12 +34,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import java.util.List; 
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShootCommand; 
+import frc.robot.AlignmentSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -55,6 +58,8 @@ public class RobotContainer {
   
   //private final ShootCommand m_ShootCommand = new ShootCommand(m_shooter);
   private SendableChooser<Command> autoChooser;
+
+  private AlignmentSubsystem m_aligner;
   
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -78,12 +83,16 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser("Back and Shoot 1");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
+    m_aligner = new AlignmentSubsystem(m_robotDrive);
+
+    boolean InTelleop = true;
+    
     
     
 
-    
-
-    
+    // double AlignmentGetLeftY;
+    // double AlignmentGetLeftX;
+    // double AlignmentGetRightX;
     configureButtonBindings();
     m_robotDrive.resetEncoders();
     m_robotDrive.zeroHeading();
@@ -91,6 +100,11 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
+        
+
+        
+        
+
         new RunCommand(
             () -> m_robotDrive.drive(
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
@@ -100,8 +114,9 @@ public class RobotContainer {
             m_robotDrive));
             
 
-    
-
+    PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+            System.out.println(pose);
+        });
   }
 
   /**
@@ -161,6 +176,28 @@ public class RobotContainer {
 
        m_driverController.rightStick()
         .onTrue(m_robotDrive.zeroCommand());
+
+
+//ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
+//ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
+//ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
+//ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
+        m_driverController.povLeft()
+        .onTrue(m_aligner.align());
+      m_driverController.povLeft()
+        .onFalse(m_aligner.alignLeft().andThen(m_aligner.stop()));
+  
+        
+        
+        //ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
+        //ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
+        //ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
+        //ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
+        m_driverController.povRight()
+        .onTrue(m_aligner.align());
+      m_driverController.povRight()
+        .onFalse(m_aligner.alignRight().andThen(m_aligner.stop()));
+        
     //  if(m_driverController.rightStick()){
     //   (m_robotDrive.zeroCommand());
     //  }
