@@ -21,7 +21,7 @@ import frc.robot.Constants.ScoringConstants;
 //import frc.robot.commands.MoveToHeightCommand;
 import frc.robot.commands.ShootCommand;
 
-// import frc.robot.commands.SlowDrive;
+import frc.robot.commands.SlowDrive;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.MotorTestSubsystem;
@@ -153,7 +153,7 @@ public class RobotContainer {
     //   .onTrue(new MoveToHeightCommand(m_elevator, ScoringConstants.kElevatorLevel4));
 
     // m_driverController.povDown()
-    //    .onTrue(new SlowDrive());
+    //    .onTrue(new RunCommand(() -> switchDrive()));
     
     m_driverController.leftTrigger()
     .onTrue(m_shooter.intake());
@@ -258,17 +258,17 @@ public class RobotContainer {
   } */
 
 
-  // public static double switchDrive(double driveMultiplyer){
+  public static void switchDrive(){
     
-  //       if(driveMultiplyer == 1){
-  //         driveMultiplyer = 1/3;
-  //       }
-  //       else{
-  //         driveMultiplyer = 1;
-  //       }
+        if(DriveConstants.driveMultiplier == 1){
+          DriveConstants.driveMultiplier = 0.75;
+          System.out.println(DriveConstants.driveMultiplier);
+        }
+        else{
+           DriveConstants.driveMultiplier = 1;
+         }
     
-  //       return driveMultiplyer;
-  //   }
+     }
 
 
   

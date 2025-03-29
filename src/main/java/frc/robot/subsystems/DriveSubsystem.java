@@ -152,7 +152,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Boolean supplier that controls when the path will be mirrored for the red alliance
         // This will flip the path being followed to the red side of the field.
         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
+        
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
           return alliance.get() == DriverStation.Alliance.Red;
@@ -240,7 +240,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
     
-    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double xSpeedDelivered = xSpeed  * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
     fieldRelative = true;

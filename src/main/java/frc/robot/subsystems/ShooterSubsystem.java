@@ -50,8 +50,8 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public Command shoot(){
         return runOnce(() -> {
-            pidControllerLeft.setReference(-1500, ControlType.kVelocity);
-            pidControllerRight.setReference(-1500, ControlType.kVelocity);
+            pidControllerLeft.setReference(-1250, ControlType.kVelocity);
+            pidControllerRight.setReference(-1250, ControlType.kVelocity);
     });
     }
 
@@ -64,8 +64,8 @@ public class ShooterSubsystem extends SubsystemBase{
     
     public Command intake(){
         return runOnce(() -> {
-            pidControllerLeft.setReference(800, ControlType.kVelocity);
-            pidControllerRight.setReference(800, ControlType.kVelocity);
+            pidControllerLeft.setReference(-800, ControlType.kVelocity);
+            pidControllerRight.setReference(-800, ControlType.kVelocity);
     });
     
     }

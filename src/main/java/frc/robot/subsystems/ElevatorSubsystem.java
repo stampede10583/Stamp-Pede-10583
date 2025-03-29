@@ -158,8 +158,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     
     public Command downCommand(){
         return runOnce(() -> {
-            pidControllerLeft.setReference(-ScoringConstants.kElevatorMotorSpeed, ControlType.kVelocity);
-            pidControllerRight.setReference(ScoringConstants.kElevatorMotorSpeed, ControlType.kVelocity);
+            pidControllerLeft.setReference(-ScoringConstants.kElevatorMotorSpeed * 0.7, ControlType.kVelocity);
+            pidControllerRight.setReference(ScoringConstants.kElevatorMotorSpeed * 0.7, ControlType.kVelocity);
     });
 
     }

@@ -131,6 +131,6 @@ public final class Constants {
     public static final double kElevatorHeightIncrement = 0; //ABSOLUTELY MUST CHANGE LATER
 //*********************************************************************************************************** */
   
-    public static final int kElevatorMotorSpeed = 2000;
+    public static final int kElevatorMotorSpeed = 3500;
 }
 }
