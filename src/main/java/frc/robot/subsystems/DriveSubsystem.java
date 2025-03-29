@@ -33,6 +33,7 @@ import frc.robot.LimelightHelpers;
 // import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -71,7 +72,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Replaced by m_poseEstimator
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      Rotation2d.fromDegrees(-m_gyro.getAngle()),
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -90,7 +91,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_poseEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      Rotation2d.fromDegrees(-m_gyro.getAngle()),
       new SwerveModulePosition[] {
         m_frontLeft.getPosition(),
         m_frontRight.getPosition(),
@@ -180,7 +181,7 @@ public class DriveSubsystem extends SubsystemBase {
     //   m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
     //   m_poseEstimator.addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
     // }
-    //System.out.println(Rotation2d.fromDegrees(m_gyro.getAngle()));
+    //System.out.println(Rotation2d.fromDegrees(-m_gyro.getAngle()));
   }
 
   /**
@@ -206,7 +207,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_poseEstimator.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -238,8 +239,9 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond / 2;
-    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond / 2;
+    
+    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
     fieldRelative = true;
 
@@ -301,7 +303,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
+    return Rotation2d.fromDegrees(-m_gyro.getAngle()).getDegrees();
   }
 
   /**
@@ -318,5 +320,11 @@ public class DriveSubsystem extends SubsystemBase {
         this.zeroHeading();
     });
   }
+
+//   public Command driveCommand(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+//     return Commands.runOnce(() -> {
+//         this.drive(xSpeed, ySpeed, rot, fieldRelative);
+//     });
+// }
 //  }
 }

@@ -1,6 +1,9 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,6 +16,14 @@ import frc.robot.commands.ExampleCommand;
 //import frc.robot.commands.MoveToHeightCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import edu.wpi.first.cameraserver.CameraServer;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+import frc.robot.AlignmentSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -33,12 +44,41 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    // var camera = CameraServer.startAutomaticCapture();
-    // camera.setResolution(640, 480);
-    // camera.setFPS(30);
+    UsbCamera camera = CameraServer.startAutomaticCapture();
+
+     camera.setResolution(640, 480);
+     camera.setFPS(30);
+
+
+     CvSink cvSink = CameraServer.getVideo();
+
+
+     CvSource outputStream = CameraServer.putVideo("Crosshair Camera", 640, 480);
+
+     new Thread(() -> processCameraFeed(cvSink, outputStream)).start();
+
+
+
+
+
     m_robotContainer = new RobotContainer();
     
   }
+
+  private void drawCrosshair(Mat frame) {
+    int centerX = frame.width() / 2;
+    int centerY = frame.height() / 2;
+    int crosshairSize = 20;
+    Scalar color = new Scalar(0, 255, 0); // Green color
+    int thickness = 2;
+
+    // Draw horizontal line
+    Imgproc.line(frame, new Point(centerX - crosshairSize, centerY),
+            new Point(centerX + crosshairSize, centerY), color, thickness);
+    // Draw vertical line
+    Imgproc.line(frame, new Point(centerX, centerY - crosshairSize),
+            new Point(centerX, centerY + crosshairSize), color, thickness);
+}
 
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
@@ -47,6 +87,10 @@ public class Robot extends TimedRobot {
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
    * SmartDashboard integrated updating.
    */
+
+   
+
+
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
@@ -116,4 +160,20 @@ public class Robot extends TimedRobot {
     
     
   }
+
+
+
+  private void processCameraFeed(CvSink cvSink, CvSource outputStream) {
+    Mat mat = new Mat();
+
+    while (!Thread.interrupted()) {
+        if (cvSink.grabFrame(mat) == 0) {
+            continue; // Skip the frame if there's an error
+        }
+        // Draw the crosshair on the frame
+        mat = AlignmentSubsystem.drawCrosshair(mat);
+        // Send the frame to the dashboard
+        outputStream.putFrame(mat);
+    }
+}
 }

@@ -19,10 +19,12 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final class DriveConstants {
+    public static double driveMultiplier = 1;
+    
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 3; //Fix this to 4.8
-    public static final double kMaxAngularSpeed = Math.PI; // radians per second fix this should be 2 pi
+    public static final double kMaxSpeedMetersPerSecond = 4.8; //Fix this to 4.8
+    public static final double kMaxAngularSpeed = 2*Math.PI; // radians per second fix this should be 2 pi
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(25.0625);
@@ -129,6 +131,6 @@ public final class Constants {
     public static final double kElevatorHeightIncrement = 0; //ABSOLUTELY MUST CHANGE LATER
 //*********************************************************************************************************** */
   
-    public static final int kElevatorMotorSpeed = 800;
+    public static final int kElevatorMotorSpeed = 2000;
 }
 }

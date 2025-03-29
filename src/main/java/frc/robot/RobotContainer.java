@@ -21,6 +21,7 @@ import frc.robot.Constants.ScoringConstants;
 //import frc.robot.commands.MoveToHeightCommand;
 import frc.robot.commands.ShootCommand;
 
+// import frc.robot.commands.SlowDrive;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.MotorTestSubsystem;
@@ -53,8 +54,10 @@ import frc.robot.AlignmentSubsystem;
 public class RobotContainer {
   // The robot's subsystems
   private DriveSubsystem m_robotDrive;
-  //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
-  //private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+
+  public double driveMultiplyer = 1;
   
   //private final ShootCommand m_ShootCommand = new ShootCommand(m_shooter);
   private SendableChooser<Command> autoChooser;
@@ -70,13 +73,15 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button binding
     
-    // NamedCommands.registerCommand("shooterShoot", m_shooter.shoot());
-    // NamedCommands.registerCommand("shooterShootL1", m_shooter.shootL1());
-    // NamedCommands.registerCommand("shooterIntake", m_shooter.intake());
-    // NamedCommands.registerCommand("shooterStop", m_shooter.stop());
-    // NamedCommands.registerCommand("elevatorUp", m_elevator.upCommand());
-    // NamedCommands.registerCommand("elevatorDown", m_elevator.downCommand());
-    // NamedCommands.registerCommand("elevatorStop", m_elevator.stop());
+    NamedCommands.registerCommand("shooterShoot", m_shooter.shoot());
+    NamedCommands.registerCommand("shooterShootL1", m_shooter.shootL1());
+    NamedCommands.registerCommand("shooterIntake", m_shooter.intake());
+    NamedCommands.registerCommand("shooterStop", m_shooter.stop());
+    NamedCommands.registerCommand("elevatorUp", m_elevator.upCommand());
+    NamedCommands.registerCommand("elevatorDown", m_elevator.downCommand());
+    NamedCommands.registerCommand("elevatorStop", m_elevator.stop());
+
+    //NamedCommands.registerCommand("driveForward", m_robotDrive.driveCommand(1, 0, 0, false));
 
     m_robotDrive = new DriveSubsystem();
 
@@ -129,10 +134,10 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    // m_driverController.rightBumper()
-    //     .whileTrue(new RunCommand(
-    //         () -> m_robotDrive.setX(),
-    //         m_robotDrive));
+    m_driverController.rightBumper()
+        .whileTrue(new RunCommand(
+            () -> m_robotDrive.setX(),
+            m_robotDrive));
 
     // m_driverController.a()
     //   .onTrue(new MoveToHeightCommand(m_elevator, ScoringConstants.kElevatorLevel1));
@@ -147,22 +152,25 @@ public class RobotContainer {
     // m_driverController.y()
     //   .onTrue(new MoveToHeightCommand(m_elevator, ScoringConstants.kElevatorLevel4));
 
+    // m_driverController.povDown()
+    //    .onTrue(new SlowDrive());
+    
+    m_driverController.leftTrigger()
+    .onTrue(m_shooter.intake());
+    m_driverController.leftTrigger()
+    .onFalse(m_shooter.stop());
+     m_driverController.rightTrigger()
+       .onTrue(m_shooter.shoot());
+     m_driverController.rightTrigger()
+       .onFalse(m_shooter.stop());
 
-    // m_driverController.leftTrigger()
-    // .onTrue(m_shooter.intake());
-    // m_driverController.leftTrigger()
-    // .onFalse(m_shooter.stop());
-    //  m_driverController.rightTrigger()
-    //    .onTrue(m_shooter.shoot());
-    //  m_driverController.rightTrigger()
-    //    .onFalse(m_shooter.stop());
+       m_driverController.povUp()
+       .onTrue(m_shooter.shootL1());
+     m_driverController.povUp()
+       .onFalse(m_shooter.stop());
 
-    //    m_driverController.povUp()
-    //    .onTrue(m_shooter.shootL1());
-    //  m_driverController.povUp()
-    //    .onFalse(m_shooter.stop());
+       
 
-    /*
      m_driverController.leftBumper()
         .onTrue(m_elevator.downCommand());
     m_driverController.leftBumper()
@@ -171,7 +179,6 @@ public class RobotContainer {
        .onTrue(m_elevator.upCommand());
      m_driverController.rightBumper()
        .onFalse(m_elevator.stop());
-    */
 
 
        m_driverController.rightStick()
@@ -182,10 +189,10 @@ public class RobotContainer {
 //ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
 //ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
 //ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
-        m_driverController.povLeft()
-        .onTrue(m_aligner.align());
-      m_driverController.povLeft()
-        .onFalse(m_aligner.alignLeft().andThen(m_aligner.stop()));
+      //   m_driverController.povLeft()
+      //   .onTrue(m_aligner.align());
+      // m_driverController.povLeft()
+      //   .onFalse(m_aligner.alignLeft().andThen(m_aligner.stop()));
   
         
         
@@ -193,10 +200,10 @@ public class RobotContainer {
         //ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
         //ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
         //ABSOLUTELY MUST CHANGE THE ON FALSE TO BE A TIMED COMMAND OTHERWISE WE SOLVED NOTHING
-        m_driverController.povRight()
-        .onTrue(m_aligner.align());
-      m_driverController.povRight()
-        .onFalse(m_aligner.alignRight().andThen(m_aligner.stop()));
+      //   m_driverController.povRight()
+      //   .onTrue(m_aligner.align());
+      // m_driverController.povRight()
+      //   .onFalse(m_aligner.alignRight().andThen(m_aligner.stop()));
         
     //  if(m_driverController.rightStick()){
     //   (m_robotDrive.zeroCommand());
@@ -251,7 +258,24 @@ public class RobotContainer {
   } */
 
 
+  // public static double switchDrive(double driveMultiplyer){
+    
+  //       if(driveMultiplyer == 1){
+  //         driveMultiplyer = 1/3;
+  //       }
+  //       else{
+  //         driveMultiplyer = 1;
+  //       }
+    
+  //       return driveMultiplyer;
+  //   }
+
+
+  
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
+
+
+  
 }
