@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8390625,
-        "y": 2.87328125
+        "x": 3.958721590909091,
+        "y": 3.7308380681818174
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.535915841746472,
-        "y": 1.8583382104598456
+        "x": 2.779392334601641,
+        "y": 2.6680764567373654
       },
       "isLocked": false,
       "linkedName": "Reef 6"
     },
     {
       "anchor": {
-        "x": 0.7079829545454546,
-        "y": 0.67953125
+        "x": 0.29914772727272726,
+        "y": 0.6496164772727275
       },
       "prevControl": {
-        "x": 0.507174470761511,
-        "y": 0.5306153245910845
+        "x": 0.09096092088572355,
+        "y": 0.46849906568457944
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,10 +33,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.46,
     "maxAcceleration": 3.0,
-    "maxAngularVelocity": 90.0,
-    "maxAngularAcceleration": 45.0,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 90.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },

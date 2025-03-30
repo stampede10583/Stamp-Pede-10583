@@ -144,7 +144,7 @@ public class DriveSubsystem extends SubsystemBase {
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
       new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(0.04, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(1, 0.0, 0.0), // Translation PID constants
               new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
       ),
       config, // The robot configuration
@@ -206,6 +206,16 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
+    m_gyro.reset();
+    m_odometry.resetPosition(
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
+        new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition()
+        },
+        pose);
     m_poseEstimator.resetPosition(
         Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
