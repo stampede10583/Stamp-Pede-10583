@@ -18,9 +18,30 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  
+  public static final class StolenConstants {
+  public static final double X_REEF_ALIGNMENT_P = 1;
+	public static final double Y_REEF_ALIGNMENT_P = 1;
+	public static final double ROT_REEF_ALIGNMENT_P = 0.01;
+
+	public static final double ROT_SETPOINT_REEF_ALIGNMENT = 0;  // Rotation
+	public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 1;
+	public static final double X_SETPOINT_REEF_ALIGNMENT = -0.34;  // Vertical pose
+	public static final double X_TOLERANCE_REEF_ALIGNMENT = 0.02;
+	public static final double Y_SETPOINT_REEF_ALIGNMENT = 0.16;  // Horizontal pose
+	public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0.02;
+
+	public static final double DONT_SEE_TAG_WAIT_TIME = 1;
+	public static final double POSE_VALIDATION_TIME = 0.3;
+  }
+  
+  
   public static final class DriveConstants {
     public static double driveMultiplier = 1;
-    
+    public static final double accelerationSlewRate = .5;  // Adjust for smoother starts
+public static final double decelerationSlewRate = .5;  // Faster stopping
+
+
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 4.8; //Fix this to 4.8
@@ -130,7 +151,9 @@ public final class Constants {
 //*********************************************************************************************************** */
     public static final double kElevatorHeightIncrement = 0; //ABSOLUTELY MUST CHANGE LATER
 //*********************************************************************************************************** */
-  
+  //3500 normal speed
     public static final int kElevatorMotorSpeed = 3500;
+
+    public static final double kElevatorSpeed = 0.95; //meters per second
 }
 }

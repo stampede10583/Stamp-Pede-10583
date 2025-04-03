@@ -9,6 +9,7 @@ import com.studica.frc.AHRS.NavXComType;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.RobotContainer;
 // import edu.wpi.first.wpilibj.ADIS16470_IMU;
 // import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import frc.robot.Constants.DriveConstants;
@@ -63,6 +65,8 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearRightDrivingCanId,
       DriveConstants.kRearRightTurningCanId,
       DriveConstants.kBackRightChassisAngularOffset);
+
+
 
   // The gyro sensor
   //hi i was here
@@ -247,28 +251,80 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    // Convert the commanded speeds into the correct units for the drivetrain
-    
-    double xSpeedDelivered = xSpeed  * DriveConstants.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+// Define slew rate limiters as class members
+private SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(1);
+private SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(1);
+private SlewRateLimiter rotLimiter = new SlewRateLimiter(1);
+
+// Store previous speed values
+private double prevXSpeed = 0.0;
+private double prevYSpeed = 0.0;
+private double prevRot = 0.0;
+
+public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+
+    // Adjust slew rates based on acceleration or deceleration
+    double xSlewRate = (Math.abs(xSpeed) < Math.abs(prevXSpeed)) 
+                        ? DriveConstants.decelerationSlewRate 
+                        : DriveConstants.accelerationSlewRate;
+
+    double ySlewRate = (Math.abs(ySpeed) < Math.abs(prevYSpeed)) 
+                        ? DriveConstants.decelerationSlewRate 
+                        : DriveConstants.accelerationSlewRate;
+
+    double rotSlewRate = (Math.abs(rot) < Math.abs(prevRot)) 
+                        ? DriveConstants.decelerationSlewRate 
+                        : DriveConstants.accelerationSlewRate;
+
+    // Apply new rates
+    xSpeedLimiter = new SlewRateLimiter(xSlewRate);
+    ySpeedLimiter = new SlewRateLimiter(ySlewRate);
+    rotLimiter = new SlewRateLimiter(rotSlewRate);
+
+    // Apply slew rate limiters
+    double limitedXSpeed = xSpeedLimiter.calculate(xSpeed);
+    double limitedYSpeed = ySpeedLimiter.calculate(ySpeed);
+    double limitedRot = rotLimiter.calculate(rot);
+
+    System.out.println(LimelightHelpers.getTV(""));
+
+    // Convert to drivetrain units
+    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond * DriveConstants.driveMultiplier;
+    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond * DriveConstants.driveMultiplier;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
-    fieldRelative = true;
+
+    //System.out.println("X Speed: " + xSpeedDelivered + "\nY Speed: " + ySpeedDelivered);
+
+    // fieldRelative = true;
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
                 Rotation2d.fromDegrees(-m_gyro.getYaw()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
+
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+    
+    // Apply states to modules
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
-    SmartDashboard.putNumber("Gyro Yaw", m_gyro.getYaw()); 
-    System.out.println(m_gyro.getYaw());
-  }
+
+    // Store previous speeds
+    prevXSpeed = xSpeed;
+    prevYSpeed = ySpeed;
+    prevRot = rot;
+
+    // Debug output
+    SmartDashboard.putNumber("Gyro Yaw", m_gyro.getYaw());
+    //System.out.println(m_gyro.getYaw());
+    
+}
+
+
+
 
   /**
    * Sets the wheels into an X formation to prevent movement.

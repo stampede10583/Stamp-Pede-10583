@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
 //import frc.robot.commands.MoveToHeightCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -24,7 +25,8 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import frc.robot.AlignmentSubsystem;
-
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableInstance;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -44,18 +46,26 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    
+
+    // Manually send Limelight feed URL to SmartDashboard
+    
+
+
     UsbCamera camera = CameraServer.startAutomaticCapture();
 
-     camera.setResolution(640, 480);
-     camera.setFPS(30);
+    camera.setResolution(640, 480);
+    camera.setFPS(30);
 
 
-     CvSink cvSink = CameraServer.getVideo();
+    CvSink cvSink = CameraServer.getVideo();
 
 
-     CvSource outputStream = CameraServer.putVideo("Crosshair Camera", 640, 480);
+    CvSource outputStream = CameraServer.putVideo("Crosshair Camera", 640, 480);
 
-     new Thread(() -> processCameraFeed(cvSink, outputStream)).start();
+    new Thread(() -> processCameraFeed(cvSink, outputStream)).start();
+    // Add Limelight stream to SmartDashboard manually
+    
 
 
 
@@ -98,6 +108,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    System.out.println(RobotContainer.m_elevator.getEncoderCount());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

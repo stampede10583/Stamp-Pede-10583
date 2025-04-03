@@ -16,7 +16,7 @@ import frc.robot.Configs;
 import frc.robot.Constants;
 import frc.robot.Constants.ScoringConstants;
 import edu.wpi.first.wpilibj.PWM;
-
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -83,9 +83,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     //     height += encoderCount*ScoringConstants.kElevatorEncoderDistancePerPulse;
     //     return height;
     // }
-    // public double getEncoderCount(){
-    //     return encoder.getPosition();
-    // }
+    public double getEncoderCount(){
+        return encoder.getPosition();
+    }
     // public void resetEncoder() {
     //     encoder.setPosition(0);
     // }
@@ -153,6 +153,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         return runOnce(() -> {
             pidControllerLeft.setReference(ScoringConstants.kElevatorMotorSpeed, ControlType.kVelocity);
             pidControllerRight.setReference(-ScoringConstants.kElevatorMotorSpeed, ControlType.kVelocity);
+            System.out.println(this.getEncoderCount());
     });
     }
     
@@ -160,6 +161,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         return runOnce(() -> {
             pidControllerLeft.setReference(-ScoringConstants.kElevatorMotorSpeed * 0.7, ControlType.kVelocity);
             pidControllerRight.setReference(ScoringConstants.kElevatorMotorSpeed * 0.7, ControlType.kVelocity);
+            System.out.println(this.getEncoderCount());
     });
 
     }
@@ -168,6 +170,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         return runOnce(() ->{
             elevatorMotorLeft.stopMotor();
             elevatorMotorRight.stopMotor();
+            System.out.println(this.getEncoderCount());
         });
     }
 }

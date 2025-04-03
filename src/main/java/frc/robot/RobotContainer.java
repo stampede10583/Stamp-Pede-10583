@@ -18,6 +18,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ScoringConstants;
+import frc.robot.commands.AlignToReefTagRelative;
 //import frc.robot.commands.MoveToHeightCommand;
 import frc.robot.commands.ShootCommand;
 
@@ -55,7 +56,7 @@ public class RobotContainer {
   // The robot's subsystems
   private DriveSubsystem m_robotDrive;
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
-  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  public static final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
   public double driveMultiplyer = 1;
   
@@ -91,6 +92,8 @@ public class RobotContainer {
     m_aligner = new AlignmentSubsystem(m_robotDrive);
 
     boolean InTelleop = true;
+
+    System.out.println(m_elevator.getEncoderCount());
     
     
     
@@ -106,15 +109,15 @@ public class RobotContainer {
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         
-
+    
         
         
-
+        
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband) * driveMultiplyer,
+                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband)* driveMultiplyer,
+                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband) * driveMultiplyer,
                 true),
             m_robotDrive));
             
@@ -122,6 +125,8 @@ public class RobotContainer {
     PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
             System.out.println(pose);
         });
+    
+        System.out.println(m_elevator.getEncoderCount());
   }
 
   /**
@@ -134,10 +139,7 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_driverController.rightBumper()
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
-            m_robotDrive));
+
 
     // m_driverController.a()
     //   .onTrue(new MoveToHeightCommand(m_elevator, ScoringConstants.kElevatorLevel1));
@@ -152,9 +154,22 @@ public class RobotContainer {
     // m_driverController.y()
     //   .onTrue(new MoveToHeightCommand(m_elevator, ScoringConstants.kElevatorLevel4));
 
-    // m_driverController.povDown()
-    //    .onTrue(new RunCommand(() -> switchDrive()));
-    
+    m_driverController.povDown()
+       .onTrue(new RunCommand(() -> switchDrive()));
+
+
+    // m_driverController.povLeft()
+    //   .onTrue(m_aligner.leftAlighCommand());
+
+
+    // m_driverController.povRight()
+    //   .onTrue(((m_aligner.rightAlignCommand())));
+
+
+      m_driverController.povRight().onTrue(new AlignToReefTagRelative(true, m_robotDrive).withTimeout(3));
+		 m_driverController.povLeft().onTrue(new AlignToReefTagRelative(false, m_robotDrive).withTimeout(3));
+
+
     m_driverController.leftTrigger()
     .onTrue(m_shooter.intake());
     m_driverController.leftTrigger()
@@ -261,8 +276,8 @@ public class RobotContainer {
   public static void switchDrive(){
     
         if(DriveConstants.driveMultiplier == 1){
-          DriveConstants.driveMultiplier = 0.75;
-          System.out.println(DriveConstants.driveMultiplier);
+          DriveConstants.driveMultiplier = 0.5;
+          // System.out.println(DriveConstants.driveMultiplier);
         }
         else{
            DriveConstants.driveMultiplier = 1;
