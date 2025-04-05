@@ -43,23 +43,27 @@ public class AlignToReefTagRelative extends Command {
     xController.setSetpoint(StolenConstants.X_SETPOINT_REEF_ALIGNMENT);
     xController.setTolerance(StolenConstants.X_TOLERANCE_REEF_ALIGNMENT);
 
-    yController.setSetpoint(isRightScore ? StolenConstants.Y_SETPOINT_REEF_ALIGNMENT : -StolenConstants.Y_SETPOINT_REEF_ALIGNMENT);
+    //yController.setSetpoint(isRightScore ? StolenConstants.Y_SETPOINT_REEF_ALIGNMENT : -StolenConstants.Y_SETPOINT_REEF_ALIGNMENT);
+    yController.setSetpoint(0);
     yController.setTolerance(StolenConstants.Y_TOLERANCE_REEF_ALIGNMENT);
 
     tagID = LimelightHelpers.getFiducialID("");
+    System.out.println(tagID);
   }
 
   @Override
   public void execute() {
+    System.out.println(tagID);
     if (LimelightHelpers.getTV("") && LimelightHelpers.getFiducialID("") == tagID) {
       this.dontSeeTagTimer.reset();
 
       double[] postions = LimelightHelpers.getBotPose_TargetSpace("");
       SmartDashboard.putNumber("x", postions[2]);
 
-      double xSpeed = xController.calculate(postions[2]);
+      double xSpeed = -xController.calculate(postions[2]);
       SmartDashboard.putNumber("xspeed", xSpeed);
-      double ySpeed = -yController.calculate(postions[0]);
+      //maybe change to be negative
+      double ySpeed = yController.calculate(postions[0]); //we revomed a negative
       double rotValue = -rotController.calculate(postions[4]);
 
       drivebase.drive(xSpeed, ySpeed, rotValue, false);

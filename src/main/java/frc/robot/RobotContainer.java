@@ -57,6 +57,7 @@ public class RobotContainer {
   private DriveSubsystem m_robotDrive;
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public static final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  
 
   public double driveMultiplyer = 1;
   
@@ -81,6 +82,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevatorUp", m_elevator.upCommand());
     NamedCommands.registerCommand("elevatorDown", m_elevator.downCommand());
     NamedCommands.registerCommand("elevatorStop", m_elevator.stop());
+    
+    // NamedCommands.registerCommand("alignRight", (
+    //   Commands.sequence(new AlignToReefTagRelative(true, m_robotDrive).withTimeout(3), 
+    //   m_robotDrive.run(() -> m_robotDrive.drive(0, 0.25, 0, false)).withTimeout(0.28))));
+
+    // NamedCommands.registerCommand("alignleft", (
+    //   Commands.sequence(new AlignToReefTagRelative(true, m_robotDrive).withTimeout(3), 
+    //   m_robotDrive.run(() -> m_robotDrive.drive(0, -0.25, 0, false)).withTimeout(0.28))));
+
 
     //NamedCommands.registerCommand("driveForward", m_robotDrive.driveCommand(1, 0, 0, false));
 
@@ -166,9 +176,19 @@ public class RobotContainer {
     //   .onTrue(((m_aligner.rightAlignCommand())));
 
 
-      m_driverController.povRight().onTrue(new AlignToReefTagRelative(true, m_robotDrive).withTimeout(3));
-		 m_driverController.povLeft().onTrue(new AlignToReefTagRelative(false, m_robotDrive).withTimeout(3));
+    //   m_driverController.povRight().onTrue(new AlignToReefTagRelative(true, m_robotDrive).withTimeout(3));
+		//  m_driverController.povLeft().onTrue(new AlignToReefTagRelative(false, m_robotDrive).withTimeout(3));
 
+     m_driverController.povRight()
+     .onTrue(
+      Commands.sequence(new AlignToReefTagRelative(true, m_robotDrive).withTimeout(3), 
+      m_robotDrive.run(() -> m_robotDrive.drive(0, 0.25, 0, false)).withTimeout(0.28)));
+
+      m_driverController.povLeft()
+      .onTrue(
+       Commands.sequence(new AlignToReefTagRelative(true, m_robotDrive).withTimeout(3), 
+       m_robotDrive.run(() -> m_robotDrive.drive(0, -0.25, 0, false)).withTimeout(0.28)));
+ 
 
     m_driverController.leftTrigger()
     .onTrue(m_shooter.intake());

@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Red 3b to reef 5"
+            "pathName": "Red Straight Path"
           }
         },
         {
@@ -15,21 +21,57 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.2
+                }
+              },
+              {
                 "type": "named",
                 "data": {
-                  "name": "shooterShootL1"
+                  "name": "elevatorUp"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.8
+                  "waitTime": 2.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shooterShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "shooterStop"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "elevatorDown"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "elevatorStop"
                 }
               }
             ]
@@ -38,13 +80,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red reef 5 to station 2"
+            "pathName": "Red Reef 4 to Station 2"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 1.5
           }
         },
         {
@@ -52,9 +94,21 @@
           "data": {
             "commands": [
               {
+                "type": "path",
+                "data": {
+                  "pathName": "Red station 2 to Reef 6"
+                }
+              },
+              {
                 "type": "sequential",
                 "data": {
                   "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
                     {
                       "type": "named",
                       "data": {
@@ -64,7 +118,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.2
+                        "waitTime": 0.1
                       }
                     },
                     {
@@ -75,12 +129,6 @@
                     }
                   ]
                 }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Red station 2 to Reef 6"
-                }
               }
             ]
           }
@@ -98,7 +146,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.8
+                  "waitTime": 0.5
                 }
               },
               {
@@ -129,13 +177,19 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red station 2 to reef 1"
+                  "pathName": "Red station 2 to Reef 6"
                 }
               },
               {
                 "type": "sequential",
                 "data": {
                   "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
                     {
                       "type": "named",
                       "data": {
@@ -161,6 +215,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Red station 2 to Reef 6"
+          }
+        },
+        {
           "type": "sequential",
           "data": {
             "commands": [
@@ -173,7 +233,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.25
+                  "waitTime": 1.0
                 }
               },
               {

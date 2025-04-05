@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 5.843352272727272,
-        "y": 4.069872159090909
+        "y": 3.870440340909091
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.6790521523178805,
-        "y": 6.479001919024684
+        "y": 6.279570100842866
       },
       "isLocked": false,
       "linkedName": "Reef 4"
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.46,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 90.0,
     "nominalVoltage": 12.0,
